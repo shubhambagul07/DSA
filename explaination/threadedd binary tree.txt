@@ -1,0 +1,183 @@
+Here’s a **line-by-line explanation** of your **Threaded Binary Tree** C++ program:
+
+---
+
+### 🔸 **Structure Definition**
+
+```cpp
+struct ThreadedNode {
+    int data;
+    ThreadedNode* left;
+    ThreadedNode* right;
+    bool leftThread;
+    bool rightThread;
+```
+
+* `ThreadedNode` is a structure for each node in the **Threaded Binary Tree**.
+* `left` and `right`: pointers to the left and right children (or threads).
+* `leftThread`, `rightThread`: Booleans to tell whether left/right pointers are actual child links (`false`) or **threads** (`true`).
+
+---
+
+### 🔸 **Constructor**
+
+```cpp
+ThreadedNode(int val) {
+    data = val;
+    left = NULL;
+    right = NULL;
+    leftThread = false;
+    rightThread = false;
+}
+```
+
+* Initializes a new node with `val`.
+* Both children are initially `NULL`.
+* Thread flags are set to `false`.
+
+---
+
+### 🔸 **Inorder Traversal**
+
+```cpp
+void inorder(ThreadedNode* root) {
+    if (root == NULL) return;
+
+    ThreadedNode* current = root;
+    while (current != NULL) {
+        while (!current->leftThread && current->left != NULL)
+            current = current->left;
+
+        cout << current->data << " ";
+
+        while (current->rightThread) {
+            current = current->right;
+            cout << current->data << " ";
+        }
+
+        current = current->right;
+    }
+}
+```
+
+* Moves to the **leftmost node**.
+* Prints it, and follows **threads (rightThread)** to print in in-order.
+* Then continues to right subtree.
+
+---
+
+### 🔸 **Preorder Traversal**
+
+```cpp
+void preorder(ThreadedNode* root) {
+    if (root == NULL) return;
+
+    ThreadedNode* current = root;
+    cout << current->data << " ";
+
+    while (current != NULL) {
+        if (!current->leftThread) {
+            current = current->left;
+            cout << current->data << " ";
+        } else {
+            while (current->rightThread && current->right != NULL) {
+                current = current->right;
+                cout << current->data << " ";
+            }
+            current = current->right;
+        }
+    }
+}
+```
+
+* Visit current node.
+* Then go to the left if not threaded.
+* Otherwise, follow **right threads**.
+
+---
+
+### 🔸 **Threading the Tree**
+
+```cpp
+void inorderThreading(ThreadedNode* root) {
+    if (root == NULL) return;
+
+    ThreadedNode* prev = NULL;
+    ThreadedNode* current = root;
+
+    while (current != NULL) {
+        while (current->left != NULL && !current->leftThread)
+            current = current->left;
+
+        if (current->left == NULL) {
+            current->leftThread = true;
+            current->left = prev;
+        }
+
+        if (prev != NULL && prev->right == NULL) {
+            prev->rightThread = true;
+            prev->right = current;
+        }
+
+        prev = current;
+
+        if (!current->rightThread)
+            current = current->right;
+        else
+            break;
+    }
+}
+```
+
+* Moves to leftmost node.
+* If left child is NULL, makes it a thread to `prev`.
+* If `prev` has no right child, make it a **thread** to `current`.
+
+🛑 **Issue:** This is an **incomplete threading approach** (non-recursive, doesn't cover full tree). Normally, **inorder threading** is done using a **recursive traversal**, updating `prev` across recursive calls.
+
+---
+
+### 🔸 **Main Function**
+
+```cpp
+int main() {
+    ThreadedNode* root = new ThreadedNode(1);
+    root->left = new ThreadedNode(2);
+    root->right = new ThreadedNode(3);
+    root->left->left = new ThreadedNode(4);
+    root->left->right = new ThreadedNode(5);
+
+    inorderThreading(root);
+
+    cout << "In-order traversal: ";
+    inorder(root);
+    cout << endl;
+
+    cout << "Pre-order traversal: ";
+    preorder(root);
+    cout << endl;
+
+    return 0;
+}
+```
+
+* Creates a normal binary tree:
+
+  ```
+        1
+       / \
+      2   3
+     / \
+    4   5
+  ```
+* Threads it.
+* Performs and prints inorder and preorder traversals.
+
+---
+
+### ✅ Summary
+
+* ✔️ Demonstrates **Threaded Binary Tree** with manual connections.
+* ⚠️ The **inorderThreading function** only partially threads the tree (only along the current path). For full threading, recursive traversal is better.
+
+Would you like a corrected version of `inorderThreading` using recursion for full and proper threading?

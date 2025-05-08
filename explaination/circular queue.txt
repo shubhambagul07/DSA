@@ -1,0 +1,191 @@
+Here's a **line-by-line explanation** of your Circular Queue C++ program using an array with fixed size:
+
+---
+
+### 📌 Header and Namespace
+
+```cpp
+#include <iostream>
+using namespace std;
+```
+
+* Includes the input-output library.
+* Uses the standard namespace to avoid prefixing `std::`.
+
+---
+
+### 🔁 Macro for Queue Size
+
+```cpp
+#define SIZE 5
+```
+
+* Defines a constant `SIZE = 5`, used to set the maximum number of elements in the circular queue.
+
+---
+
+### 🧱 CircularQueue Class
+
+```cpp
+class CircularQueue {
+private:
+    int queue[SIZE];
+    int front, rear;
+```
+
+* Declares a fixed-size array `queue` to store elements.
+* `front` points to the front element; `rear` points to the last inserted element.
+
+---
+
+### 🛠 Constructor
+
+```cpp
+public:
+    CircularQueue() {
+        front = -1;
+        rear = -1;
+    }
+```
+
+* Initializes both `front` and `rear` to -1, indicating the queue is empty.
+
+---
+
+### ➕ Enqueue Operation
+
+```cpp
+void enqueue(int value) {
+    if ((front == 0 && rear == SIZE - 1) || (rear + 1) % SIZE == front) {
+        cout << "Queue is FULL!" << endl;
+        return;
+    }
+```
+
+* Checks if the queue is **full**:
+
+  * Case 1: Front is at 0 and rear is at last index.
+  * Case 2: Rear is just before front in circular manner.
+
+```cpp
+    if (front == -1) {
+        front = rear = 0;
+    } else {
+        rear = (rear + 1) % SIZE;
+    }
+```
+
+* If queue is empty, set `front` and `rear` to 0.
+* Otherwise, move `rear` to the next position circularly.
+
+```cpp
+    queue[rear] = value;
+    cout << "Inserted: " << value << endl;
+}
+```
+
+* Insert value at `rear` position.
+
+---
+
+### ➖ Dequeue Operation
+
+```cpp
+void dequeue() {
+    if (front == -1) {
+        cout << "Queue is EMPTY!" << endl;
+        return;
+    }
+
+    cout << "Deleted: " << queue[front] << endl;
+```
+
+* Checks if queue is **empty**.
+* Prints the element at `front`.
+
+```cpp
+    if (front == rear) {
+        front = rear = -1;
+    } else {
+        front = (front + 1) % SIZE;
+    }
+}
+```
+
+* If only one element is left, reset both pointers.
+* Otherwise, move `front` forward circularly.
+
+---
+
+### 👁 Display Operation
+
+```cpp
+void display() {
+    if (front == -1) {
+        cout << "Queue is EMPTY!" << endl;
+        return;
+    }
+
+    cout << "Queue: ";
+    int i = front;
+    while (true) {
+        cout << queue[i] << " ";
+        if (i == rear)
+            break;
+        i = (i + 1) % SIZE;
+    }
+    cout << endl;
+}
+```
+
+* Prints the elements from `front` to `rear`, taking circular indexing into account.
+
+---
+
+### 🏁 Main Function with Menu
+
+```cpp
+int main() {
+    CircularQueue cq;
+    int choice, value;
+
+    do {
+        cout << "\n--- Circular Queue Menu ---\n";
+        cout << "1. Enqueue\n2. Dequeue\n3. Display\n4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+```
+
+* Creates an object `cq` of `CircularQueue`.
+* Provides a menu to perform queue operations.
+
+```cpp
+        switch (choice) {
+        case 1:
+            cout << "Enter value to insert: ";
+            cin >> value;
+            cq.enqueue(value);
+            break;
+        case 2:
+            cq.dequeue();
+            break;
+        case 3:
+            cq.display();
+            break;
+        case 4:
+            cout << "Exiting...\n";
+            break;
+        default:
+            cout << "Invalid choice!\n";
+        }
+    } while (choice != 4);
+
+    return 0;
+}
+```
+
+* Executes the selected option in a loop until the user chooses to exit.
+
+---
+
+Would you like a simple flowchart for the circular queue logic as well?

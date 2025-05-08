@@ -1,0 +1,181 @@
+Here’s a **line-by-line explanation** of your program that implements **Kruskal's and Prim's Algorithms** for finding the **Minimum Spanning Tree (MST)** of a graph:
+
+---
+
+### 🔽 Headers and Macros
+
+```cpp
+#include <iostream>
+#include <climits>  // For INT_MAX
+using namespace std;
+
+#define MAX 10  // Maximum number of departments/nodes
+```
+
+* Includes libraries.
+* Defines `MAX = 10` to limit the number of nodes to 10.
+
+---
+
+### 🔽 Disjoint Set (for Kruskal)
+
+```cpp
+int parent[MAX];
+```
+
+* Stores the parent of each node (used in Union-Find).
+
+#### `find(i)`
+
+```cpp
+int find(int i) {
+    while (parent[i] != i)
+        i = parent[i];
+    return i;
+}
+```
+
+* Finds the **root parent** of node `i`.
+
+#### `unionSets(i, j)`
+
+```cpp
+void unionSets(int i, int j) {
+    int a = find(i);
+    int b = find(j);
+    parent[a] = b;
+}
+```
+
+* Unites two sets by connecting one root to the other.
+
+---
+
+### 🔽 Kruskal's Algorithm
+
+```cpp
+void kruskalMST(int adj[MAX][MAX], int V)
+```
+
+* Takes the adjacency matrix and number of vertices.
+
+```cpp
+    int mincost = 0;
+    int edge_count = 0;
+```
+
+* Tracks the total cost and number of selected edges.
+
+```cpp
+    for (int i = 0; i < V; i++)
+        parent[i] = i;
+```
+
+* Initializes each node as its own parent.
+
+#### Find the minimum weight edge that doesn’t form a cycle
+
+```cpp
+        int min = INT_MAX, a = -1, b = -1;
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                if (find(i) != find(j) && adj[i][j] < min && adj[i][j] != 0)
+```
+
+* Scans all possible edges.
+* Chooses the smallest weight edge that connects different sets.
+
+#### Add edge to MST
+
+```cpp
+        if (a != -1 && b != -1) {
+            unionSets(a, b);
+            ...
+            edge_count++;
+        }
+```
+
+* Adds the chosen edge and unites the sets.
+
+---
+
+### 🔽 Prim's Algorithm
+
+```cpp
+void primMST(int adj[MAX][MAX], int V)
+```
+
+* Builds MST starting from one node.
+
+```cpp
+    int selected[MAX];
+    for (int i = 0; i < V; i++)
+        selected[i] = 0;
+
+    selected[0] = 1;
+```
+
+* Marks selected nodes.
+* Start from node 0.
+
+#### Find the minimum edge from selected to unselected node
+
+```cpp
+        int min = INT_MAX, x = -1, y = -1;
+
+        for (int i = 0; i < V; i++) {
+            if (selected[i]) {
+                for (int j = 0; j < V; j++) {
+                    if (!selected[j] && adj[i][j])
+```
+
+* Chooses the smallest edge connecting selected and unselected nodes.
+
+#### Add edge to MST
+
+```cpp
+        if (x != -1 && y != -1) {
+            ...
+            selected[y] = 1;
+            ...
+            edge_count++;
+        }
+```
+
+* Adds the edge and marks the destination node as selected.
+
+---
+
+### 🔽 Main Function
+
+```cpp
+    int V;
+    int adj[MAX][MAX];
+
+    cout << "Enter number of departments/nodes (max 10): ";
+    cin >> V;
+```
+
+* Takes input for number of vertices.
+
+```cpp
+    cout << "Enter adjacency matrix (0 if no direct path):\n";
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            cin >> adj[i][j];
+        }
+    }
+```
+
+* Takes input for the adjacency matrix representing edge weights.
+
+```cpp
+    kruskalMST(adj, V);
+    primMST(adj, V);
+```
+
+* Calls both algorithms.
+
+---
+
+Would you like a sample input/output for this program to better understand the flow?
